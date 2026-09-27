@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบวิสาหกิจชุมชนสมุนไพรอบแห้ง</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            herbal: {
+              50: '#f4f9f4',
+              100: '#e7f3e7',
+              200: '#c5e2c5',
+              300: '#94cb94',
+              400: '#5da85d',
+              500: '#3c8d3c',
+              600: '#2d722d',
+              700: '#245a24',
+              800: '#1e4620', // Custom Forest Green
+              900: '#1b3b1c',
+              950: '#0e1f0f',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Supabase JS Client Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Flatpickr (Thai Date Picker dd/mm/yyyy) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/themes/material_green.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
+
+  <!-- html2pdf.js — Client-side HTML to PDF export (Local & Offline capable) -->
+  <script src="js/libs/html2pdf.bundle.min.js"></script>
+
+  <!-- Chart.js — Modern Interactive Data Visualization (Local & Offline capable) -->
+  <script src="js/libs/chart.umd.min.js"></script>
+
+  <!-- Custom CSS for Premium Design -->
+  <link rel="stylesheet" href="css/styles.css?v=5">
+</head>
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex antialiased">
+
+  <!-- Mobile Sidebar Overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-30 hidden transition-opacity lg:hidden"></div>
+
+  <!-- Sidebar (Left Navigation) -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-[#0b2414] via-[#0e2c19] to-[#07190e] text-white flex flex-col z-40 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:flex-shrink-0 shadow-2xl border-r border-emerald-950/40">
+    
+    <!-- Sidebar Header (Brand Logo/Name) -->
+    <div class="p-5 border-b border-emerald-900/50 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white border border-emerald-400/30 shadow-md shadow-emerald-950/40">
+          <i class="fas fa-leaf text-xl text-white"></i>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">วิสาหกิจชุมชน</span>
+          <span class="text-sm font-extrabold text-white block truncate w-44 enterprise-name-display tracking-tight">วิสาหกิจชุมชนสมุนไพรอบแห้ง</span>
+        </div>
+      </div>
+      <!-- Close button on Mobile -->
+      <button class="lg:hidden text-white/70 hover:text-white text-xl">
+        <!-- Event bound via app.js -->
+      </button>
+    </div>
+
+    <!-- Sidebar Navigation Links -->
+    <nav class="flex-1 p-3.5 space-y-1 overflow-y-auto">
+      
+      <!-- หน้าแรก / แดชบอร์ด -->
+      <a href="#" data-view="dashboard" class="sidebar-link active flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-gauge-high text-lg w-5 text-emerald-400"></i>
+        <span>แดชบอร์ดภาพรวม</span>
+      </a>
+
+      <!-- เมนูหลักตามที่อาจารย์กำหนด (1, 2, 3, 4, 5, 7, 8) -->
+      <div class="pt-3 pb-1 px-3 text-[10px] font-bold text-emerald-400/80 uppercase tracking-wider">
+        <span>เมนูหลัก</span>
+      </div>
+
+      <!-- 1. จัดการสมาชิก -->
+      <a href="#" data-view="members" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-users text-base w-5 text-teal-400"></i>
+        <span>1. จัดการสมาชิก</span>
+      </a>
+
+      <!-- 2. จัดการแปลงปลูก -->
+      <a href="#" data-view="plots" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-map-location-dot text-base w-5 text-lime-400"></i>
+        <span>2. จัดการแปลงปลูก</span>
+      </a>
+
+      <!-- 3. จัดการรอบปลูก -->
+      <a href="#" data-view="crops" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-seedling text-base w-5 text-green-400"></i>
+        <span>3. จัดการรอบปลูก</span>
+      </a>
+
+      <!-- 4. สต็อกรวม -->
+      <a href="#" data-view="inventory" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-boxes-stacked text-base w-5 text-amber-400"></i>
+        <span>4. สต็อกรวม</span>
+      </a>
+
+      <!-- 5. จัดการขาย -->
+      <a href="#" data-view="sales" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-store text-base w-5 text-emerald-400"></i>
+        <span>5. จัดการขาย</span>
+      </a>
+
+      <!-- 7. รายงานสรุป -->
+      <a href="#" data-view="cost-revenue" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-chart-pie text-base w-5 text-indigo-400"></i>
+        <span>7. รายงานสรุป</span>
+      </a>
+
+      <!-- 8. ประวัติการขาย/ประวัติการปลูก -->
+      <a href="#" data-view="crop-history" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-clock-rotate-left text-base w-5 text-teal-300"></i>
+        <span>8. ประวัติการขาย/ประวัติการปลูก</span>
+      </a>
+
+      <!-- บริการและระบบอื่น -->
+      <div class="pt-3 pb-1 px-3 text-[10px] font-bold text-emerald-400/70 uppercase tracking-wider border-t border-emerald-900/40 my-1">
+        <span>บริการและระบบอื่น</span>
+      </div>
+
+      <!-- การเก็บเกี่ยว / ผลผลิตสด (โรงอบ) -->
+      <a href="#" data-view="fresh-produce" class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-fire-burner text-base w-5 text-amber-400"></i>
+        <span>การเก็บเกี่ยว / ผลผลิตสด (โรงอบ)</span>
+      </a>
+
+      <!-- ข้อมูลลูกค้า -->
+      <a href="#" data-view="customers" class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-handshake text-base w-5 text-rose-400"></i>
+        <span>ข้อมูลลูกค้า</span>
+      </a>
+
+      <!-- การเงินรายสมาชิก -->
+      <a href="#" data-view="finance" class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-hand-holding-dollar text-base w-5 text-yellow-400"></i>
+        <span>การเงินรายสมาชิก</span>
+      </a>
+
+      <div class="pt-3 pb-1 px-3 text-[10px] font-bold text-emerald-400/70 uppercase tracking-wider border-t border-emerald-900/40 my-1">
+        <span>ตั้งค่าระบบ</span>
+      </div>
+
+      <a href="#" data-view="settings" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
+        <i class="fa-solid fa-gear text-base w-5 text-gray-300"></i>
+        <span>ตั้งค่าข้อมูลวิสาหกิจ</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="p-4 border-t border-emerald-900/50 bg-[#07190e]">
+      <div class="flex items-center gap-3">
+        <div id="user-avatar-display" class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-xs font-bold text-white border border-emerald-500/40 shadow-inner">
+          BE
+        </div>
+        <div class="flex-1 overflow-hidden">
+          <span id="user-name-display" class="text-xs font-bold text-slate-200 block truncate">ผู้ใช้งานระบบ</span>
+          <span id="user-role-display" class="text-[10px] text-emerald-400 font-semibold block truncate">ผู้เยี่ยมชม</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Viewport (Right Area) -->
+  <div class="flex-1 flex flex-col min-h-screen overflow-y-auto">
+    
+    <!-- Top Header Navigation (Responsive bar) -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+      <div class="flex items-center gap-3.5">
+        <!-- Sidebar Toggle for Mobile -->
+        <button id="sidebar-toggle" class="p-2 -ml-2 text-slate-600 hover:text-emerald-700 rounded-xl hover:bg-slate-100 lg:hidden focus:outline-none transition-colors">
+          <i class="fas fa-bars text-lg"></i>
+        </button>
+        <div class="hidden sm:block">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[11px] text-slate-500 font-medium tracking-wider block">ระบบสารสนเทศวิสาหกิจชุมชน</span>
+          </div>
+          <span class="text-base font-bold text-slate-900 enterprise-name-display tracking-tight">วิสาหกิจชุมชนสมุนไพรอบแห้ง</span>
+        </div>
+      </div>
+
+      <!-- User Auth Status & Action buttons in top header -->
+      <div class="flex items-center gap-4">
+        <!-- Stats widget on larger screens -->
+        <div class="hidden xl:flex items-center gap-3 text-xs font-medium pr-4 border-r border-slate-200">
+          <span class="flex items-center gap-1.5 text-slate-600 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200">
+            <i class="fa-solid fa-location-dot text-emerald-600"></i>
+            พื้นที่: <span class="text-slate-900 font-bold enterprise-village-display">หมู่ 4</span>
+          </span>
+          <span class="flex items-center gap-1.5 text-slate-600 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200">
+            <i class="fa-solid fa-leaf text-amber-600"></i>
+            พืชหลัก: <span class="text-slate-900 font-bold">เก๊กฮวย / คาโมมายล์</span>
+          </span>
+        </div>
+
+        <!-- Dynamic User Status Area -->
+        <div id="header-user-container" class="flex items-center gap-3">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+    </header>
+
+    <!-- App Dynamic Views Container -->
+    <main id="app-view" class="p-4 md:p-8 w-full space-y-6 flex-1">
+      <!-- RENDERED BY APP.JS -->
+      <div class="flex justify-center items-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-700"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Global Modal Container (At body root to escape all layouts & sidebars) -->
+  <div id="global-modal-container"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3"></div>
+
+  <!-- Main JavaScript App module -->
+  <script type="module" src="js/app.js?v=73"></script>
+</body>
+</html>
+<!-- No-Cache Meta tags injected to prevent stale bugs -->
