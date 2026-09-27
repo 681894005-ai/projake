@@ -382,16 +382,6 @@ h1:hover .fa-gauge-high,
   text-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
-/* 7. Sidebar Hover Bounce */
-.sidebar-link:hover i {
-  animation: bounceRight 0.5s ease-in-out infinite alternate;
-}
-
-@keyframes bounceRight {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(4px); }
-}
-
 /* 8. Fade-in-up globally applied to main content */
 #app-view {
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
