@@ -1,0 +1,386 @@
+﻿        <!-- ============================================================== -->
+        <!-- 🚨 SECTION 1: การแจ้งเตือนเกินกำหนดการปลูก / เก็บเกี่ยว / บำรุง -->
+        <!-- ============================================================== -->
+        <div class="rounded-2xl border ${totalOverdueAlerts > 0 ? 'border-rose-300 bg-rose-50/40' : 'border-emerald-200 bg-emerald-50/30'} p-5 sm:p-6 shadow-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b ${totalOverdueAlerts > 0 ? 'border-rose-200' : 'border-emerald-200'}">
+            <div class="flex items-center gap-3">
+              <span class="flex h-4 w-4 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full ${totalOverdueAlerts > 0 ? 'bg-rose-400' : 'bg-emerald-400'} opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-4 w-4 ${totalOverdueAlerts > 0 ? 'bg-rose-500' : 'bg-emerald-500'}"></span>
+              </span>
+              <div>
+                <h2 class="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+                  <i class="fas ${totalOverdueAlerts > 0 ? 'fa-triangle-exclamation text-rose-600' : 'fa-bell text-emerald-600'}"></i>
+                  ศูนย์แจ้งเตือนกำหนดการปลูกและดูแลรักษา
+                </h2>
+                <p class="text-xs text-gray-500">ติดตามรอบการเก็บเกี่ยว วันครบกำหนดใส่ปุ๋ย และแปลงที่ต้องดำเนินการอย่างใกล้ชิด</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+              ${overdueHarvestCrops.length > 0 ? `
+                <span class="px-3 py-1 rounded-xl text-xs font-black bg-rose-600 text-white shadow-xs flex items-center gap-1.5 animate-pulse">
+                  <i class="fas fa-exclamation-circle"></i> เกินกำหนดเก็บเกี่ยว ${overdueHarvestCrops.length} แปลง
+                </span>
+              ` : ''}
+              ${overdueFertCrops.length > 0 ? `
+                <span class="px-3 py-1 rounded-xl text-xs font-black bg-amber-500 text-white shadow-xs flex items-center gap-1.5">
+                  <i class="fas fa-clock"></i> เกินกำหนดใส่ปุ๋ย ${overdueFertCrops.length} แปลง
+                </span>
+              ` : ''}
+              ${dueSoonHarvestCrops.length > 0 ? `
+                <span class="px-3 py-1 rounded-xl text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200 flex items-center gap-1">
+                  <i class="fas fa-calendar-check"></i> เก็บเกี่ยวใน 7 วัน ${dueSoonHarvestCrops.length} แปลง
+                </span>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- Alert Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            
+            <!-- Alert Card 1: Overdue Harvest Items -->
+            <div class="rounded-xl p-4 bg-white border ${overdueHarvestCrops.length > 0 ? 'border-rose-200 shadow-sm' : 'border-gray-200'}">
+              <div class="flex items-center justify-between pb-2 border-b border-gray-100 mb-2.5">
+                <span class="text-xs font-black text-rose-800 flex items-center gap-1.5">
+                  <i class="fas fa-hand-holding-dollar text-rose-500"></i> รอบที่เกินกำหนดเก็บเกี่ยว
+                </span>
+                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${overdueHarvestCrops.length > 0 ? 'bg-rose-100 text-rose-800' : 'bg-gray-100 text-gray-500'}">
+                  ${overdueHarvestCrops.length} รายการ
+                </span>
+              </div>
+              ${overdueHarvestCrops.length === 0 ? `
+                <p class="text-xs text-gray-400 py-3 text-center">ไม่มีรอบปลูกที่เกินกำหนดเก็บเกี่ยว</p>
+              ` : `
+                <div class="space-y-2.5">
+                  ${overdueHarvestCrops.map(item => `
+                    <div class="p-2.5 rounded-lg bg-rose-50/70 border border-rose-200 flex items-center justify-between gap-2">
+                      <div>
+                        <div class="text-xs font-bold text-gray-900">${item.plot ? item.plot.name : item.id}</div>
+                        <div class="text-[10px] text-gray-500">เกษตรกร: ${item.ownersNames} (${item.herbType})</div>
+                        <div class="text-[10px] font-bold text-rose-700 mt-0.5">
+                          <i class="fas fa-clock mr-1"></i>เลยกำหนด ${item.overdueDays} วัน (ครบ ${formatThaiDate(item.harvestDateEst)})
+                        </div>
+                      </div>
+                      <a href="#crops" class="px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] shrink-0 transition-colors shadow-2xs">
+                        เก็บเกี่ยว
+                      </a>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+
+            <!-- Alert Card 2: Overdue Fertilizer Items -->
+            <div class="rounded-xl p-4 bg-white border ${overdueFertCrops.length > 0 ? 'border-amber-200 shadow-sm' : 'border-gray-200'}">
+              <div class="flex items-center justify-between pb-2 border-b border-gray-100 mb-2.5">
+                <span class="text-xs font-black text-amber-900 flex items-center gap-1.5">
+                  <i class="fas fa-seedling text-amber-500"></i> รอบที่เกินกำหนดใส่ปุ๋ยบำรุง
+                </span>
+                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${overdueFertCrops.length > 0 ? 'bg-amber-100 text-amber-900' : 'bg-gray-100 text-gray-500'}">
+                  ${overdueFertCrops.length} รายการ
+                </span>
+              </div>
+              ${overdueFertCrops.length === 0 ? `
+                <p class="text-xs text-gray-400 py-3 text-center">ไม่มีรอบปลูกที่เกินกำหนดใส่ปุ๋ย</p>
+              ` : `
+                <div class="space-y-2.5">
+                  ${overdueFertCrops.map(item => `
+                    <div class="p-2.5 rounded-lg bg-amber-50/70 border border-amber-200 flex items-center justify-between gap-2">
+                      <div>
+                        <div class="text-xs font-bold text-gray-900">${item.plot ? item.plot.name : item.id}</div>
+                        <div class="text-[10px] text-gray-500">เกษตรกร: ${item.ownersNames} (${item.herbType})</div>
+                        <div class="text-[10px] font-bold text-amber-800 mt-0.5">
+                          <i class="fas fa-bell mr-1"></i>เลยกำหนด ${item.overdueDays} วัน (ครบ ${formatThaiDate(item.nextFertDateStr)})
+                        </div>
+                      </div>
+                      <a href="#crops" class="px-2.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] shrink-0 transition-colors shadow-2xs">
+                        ใส่ปุ๋ย
+                      </a>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+
+            <!-- Alert Card 3: Due Soon Harvest Items -->
+            <div class="rounded-xl p-4 bg-white border border-sky-200 shadow-sm md:col-span-2 lg:col-span-1">
+              <div class="flex items-center justify-between pb-2 border-b border-gray-100 mb-2.5">
+                <span class="text-xs font-black text-sky-900 flex items-center gap-1.5">
+                  <i class="fas fa-calendar-check text-sky-500"></i> ใกล้ถึงกำหนดเก็บเกี่ยว (7 วัน)
+                </span>
+                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 text-sky-800">
+                  ${dueSoonHarvestCrops.length} รายการ
+                </span>
+              </div>
+              ${dueSoonHarvestCrops.length === 0 ? `
+                <p class="text-xs text-gray-400 py-3 text-center">ไม่มีรอบปลูกที่ครบกำหนดใน 7 วัน</p>
+              ` : `
+                <div class="space-y-2.5">
+                  ${dueSoonHarvestCrops.map(item => `
+                    <div class="p-2.5 rounded-lg bg-sky-50/70 border border-sky-200 flex items-center justify-between gap-2">
+                      <div>
+                        <div class="text-xs font-bold text-gray-900">${item.plot ? item.plot.name : item.id}</div>
+                        <div class="text-[10px] text-gray-500">${item.ownersNames} (${item.herbType})</div>
+                        <div class="text-[10px] font-bold text-sky-700 mt-0.5">
+                          <i class="fas fa-clock mr-1"></i>อีก ${item.remainingDays} วัน (${formatThaiDate(item.harvestDateEst)})
+                        </div>
+                      </div>
+                      <span class="px-2 py-1 rounded bg-sky-100 text-sky-800 font-bold text-[10px]">เตรียมอุปกรณ์</span>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- 🌾 SECTION 2: พื้นที่ทั้งหมดมีกี่ไร่ & แยกตามชนิดพืช            -->
+        <!-- ============================================================== -->
+        <div class="rounded-2xl bg-white border border-gray-200 p-5 sm:p-6 shadow-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+            <div>
+              <h2 class="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+                <i class="fas fa-map-location-dot text-emerald-700"></i>
+                ข้อมูลพื้นที่เพาะปลูกทั้งหมดของวิสาหกิจชุมชน
+              </h2>
+              <p class="text-xs text-gray-500 mt-0.5">สรุปขนาดแปลงปลูกทั้งหมด ${plots.length} แปลง คำนวณเป็น ไร่-งาน-ตารางวา ชัดเจน</p>
+            </div>
+            <div class="flex items-baseline gap-2 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200">
+              <span class="text-xs font-bold text-emerald-800">พื้นที่รวมทั้งหมด:</span>
+              <span class="text-2xl font-black text-emerald-900 font-mono">${totalRaiDecimal.toFixed(2)}</span>
+              <span class="text-xs font-bold text-emerald-800">ไร่</span>
+              <span class="text-[11px] text-emerald-700 ml-1">(${sumRai} ไร่ ${sumNgan} งาน ${sumSqWah} ตร.ว.)</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <!-- เก๊กฮวย Area -->
+            <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                  <span class="text-base">🌼</span> แปลงปลูกดอกเก๊กฮวย
+                </span>
+                <span class="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                  ${plotsCountByHerb['เก๊กฮวย'] || 0} แปลง
+                </span>
+              </div>
+              <div class="mt-2 flex items-baseline gap-1.5">
+                <span class="text-2xl font-black text-amber-950 font-mono">${(areaByHerb['เก๊กฮวย'] || 0).toFixed(2)}</span>
+                <span class="text-xs text-amber-800 font-bold">ไร่</span>
+                <span class="text-[11px] text-amber-700 ml-auto">
+                  (${totalRaiDecimal > 0 ? (((areaByHerb['เก๊กฮวย'] || 0) / totalRaiDecimal) * 100).toFixed(1) : 0}%)
+                </span>
+              </div>
+            </div>
+
+            <!-- คาโมมายล์ Area -->
+            <div class="p-4 rounded-xl bg-sky-50/70 border border-sky-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-sky-900 flex items-center gap-1.5">
+                  <span class="text-base">🌿</span> แปลงปลูกดอกคาโมมายล์
+                </span>
+                <span class="text-xs font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded-full">
+                  ${plotsCountByHerb['คาโมมายล์'] || 0} แปลง
+                </span>
+              </div>
+              <div class="mt-2 flex items-baseline gap-1.5">
+                <span class="text-2xl font-black text-sky-950 font-mono">${(areaByHerb['คาโมมายล์'] || 0).toFixed(2)}</span>
+                <span class="text-xs text-sky-800 font-bold">ไร่</span>
+                <span class="text-[11px] text-sky-700 ml-auto">
+                  (${totalRaiDecimal > 0 ? (((areaByHerb['คาโมมายล์'] || 0) / totalRaiDecimal) * 100).toFixed(1) : 0}%)
+                </span>
+              </div>
+            </div>
+
+            <!-- พื้นที่รวมตารางเมตร -->
+            <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
+                  <i class="fas fa-chart-area text-emerald-600"></i> รวมพื้นที่ในระบบทั้งหมด
+                </span>
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                  ${plots.length} แปลง
+                </span>
+              </div>
+              <div class="mt-2 flex items-baseline gap-1.5">
+                <span class="text-2xl font-black text-emerald-950 font-mono">${totalAreaSqMeters.toLocaleString()}</span>
+                <span class="text-xs text-emerald-800 font-bold">ตร.ม.</span>
+                <span class="text-[11px] text-emerald-700 ml-auto">มาตรฐาน GAP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- ♨️ SECTION 3: แยกผลผลิตสด vs ผลผลิตหลังจากอบเสร็จแล้ว          -->
+        <!-- ============================================================== -->
+        <div class="rounded-2xl bg-white border border-gray-200 p-5 sm:p-6 shadow-xs space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+            <div>
+              <h2 class="text-base sm:text-lg font-black text-gray-900 flex items-center gap-2">
+                <i class="fas fa-fire-burner text-amber-600"></i>
+                รายงานผลผลิตแยกสดและผลผลิตหลังจากอบเสร็จแล้ว (ปีนี้)
+              </h2>
+              <p class="text-xs text-gray-500 mt-0.5">แยกผลผลิตสดที่เก็บเกี่ยวได้ และผลผลิตแห้งที่ผ่านการแปรรูปพร้อมมูลค่าประเมิน</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="#fresh-produce" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-all shadow-2xs">
+                <i class="fas fa-boxes-stacked mr-1"></i> จัดการผลผลิตสด & โรงอบ &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- 2 Master Panels: Fresh vs Dry -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+            <!-- Panel A: ผลผลิตสด (Fresh Produce) -->
+            <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50/60 to-white p-5 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-emerald-100">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-lg shadow-xs">
+                    <i class="fas fa-seedling"></i>
+                  </div>
+                  <div>
+                    <span class="text-xs font-bold text-emerald-800 block">ผลผลิตดอกสดสะสมปีนี้</span>
+                    <span class="text-2xl font-black text-emerald-950 font-mono">${totalFreshAll.toFixed(1)} <span class="text-sm font-bold">กก.</span></span>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                  เก็บเกี่ยวแล้ว ${harvestedCrops.length} รอบ
+                </span>
+              </div>
+
+              <!-- Breakdown by Herb -->
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between items-center p-2.5 rounded-xl bg-white border border-emerald-100">
+                  <span class="font-bold text-gray-800 flex items-center gap-1.5">
+                    <span>🌼</span> ดอกเก๊กฮวยสด
+                  </span>
+                  <div class="text-right">
+                    <span class="font-black text-emerald-900 font-mono text-sm">${herbProduceMap['เก๊กฮวย'].freshKg.toFixed(1)} กก.</span>
+                    <span class="text-[10px] text-gray-400 block">(เข้าอบแล้ว ${herbProduceMap['เก๊กฮวย'].freshUsedKg.toFixed(1)} กก.)</span>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center p-2.5 rounded-xl bg-white border border-emerald-100">
+                  <span class="font-bold text-gray-800 flex items-center gap-1.5">
+                    <span>🌿</span> ดอกคาโมมายล์สด
+                  </span>
+                  <div class="text-right">
+                    <span class="font-black text-emerald-900 font-mono text-sm">${herbProduceMap['คาโมมายล์'].freshKg.toFixed(1)} กก.</span>
+                    <span class="text-[10px] text-gray-400 block">(เข้าอบแล้ว ${herbProduceMap['คาโมมายล์'].freshUsedKg.toFixed(1)} กก.)</span>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+                  <span class="font-bold text-amber-900 flex items-center gap-1.5">
+                    <i class="fas fa-clock text-amber-600"></i> ผลผลิตสดยังไม่อบ (รอคิวเตาอบ)
+                  </span>
+                  <span class="font-black text-amber-950 font-mono text-sm">${totalPendingFreshAll.toFixed(1)} กก.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel B: ผลผลิตหลังจากอบเสร็จแล้ว (Dry Produce After Drying) -->
+            <div class="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50/60 to-white p-5 space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-amber-100">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center text-lg shadow-xs">
+                    <i class="fas fa-boxes-stacked"></i>
+                  </div>
+                  <div>
+                    <span class="text-xs font-bold text-amber-900 block">ผลผลิตหลังจากอบเสร็จแล้ว</span>
+                    <span class="text-2xl font-black text-amber-950 font-mono">${totalDryAll.toFixed(1)} <span class="text-sm font-bold">กก.</span></span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-amber-800 block">มูลค่าผลผลิตแห้ง</span>
+                  <span class="text-sm font-black text-amber-950 font-mono">${formatBaht(totalDryEstValue)}</span>
+                </div>
+              </div>
+
+              <!-- Breakdown by Herb -->
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between items-center p-2.5 rounded-xl bg-white border border-amber-100">
+                  <span class="font-bold text-gray-800 flex items-center gap-1.5">
+                    <span>🌼</span> ดอกเก๊กฮวยอบแห้ง
+                  </span>
+                  <div class="text-right">
+                    <span class="font-black text-amber-900 font-mono text-sm">${herbProduceMap['เก๊กฮวย'].dryKg.toFixed(1)} กก.</span>
+                    <span class="text-[10px] text-gray-500 block">อัตราส่วนเฉลี่ย 8:1 (มูลค่า ~${(herbProduceMap['เก๊กฮวย'].dryKg * 250).toLocaleString()} บ.)</span>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center p-2.5 rounded-xl bg-white border border-amber-100">
+                  <span class="font-bold text-gray-800 flex items-center gap-1.5">
+                    <span>🌿</span> ดอกคาโมมายล์อบแห้ง
+                  </span>
+                  <div class="text-right">
+                    <span class="font-black text-amber-900 font-mono text-sm">${herbProduceMap['คาโมมายล์'].dryKg.toFixed(1)} กก.</span>
+                    <span class="text-[10px] text-gray-500 block">อัตราส่วนเฉลี่ย 6:1 (มูลค่า ~${(herbProduceMap['คาโมมายล์'].dryKg * 450).toLocaleString()} บ.)</span>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                  <span class="font-bold text-emerald-900 flex items-center gap-1.5">
+                    <i class="fas fa-warehouse text-emerald-600"></i> สต็อกแห้งคงเหลือในคลังปัจจุบัน
+                  </span>
+                  <span class="font-black text-emerald-950 font-mono text-sm">${(inventoryStock.chrysanthemum.kg + inventoryStock.chamomile.kg).toFixed(1)} กก.</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Comparison Table: Fresh vs Dry -->
+          <div class="overflow-x-auto rounded-xl border border-gray-200">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-gray-50 text-gray-600 font-bold border-b border-gray-200">
+                  <th class="py-3 px-4">ชนิดพืชสมุนไพร</th>
+                  <th class="py-3 px-4 text-right">ผลผลิตสดเก็บเกี่ยว (กก.)</th>
+                  <th class="py-3 px-4 text-right">ผลผลิตสดเข้าอบ (กก.)</th>
+                  <th class="py-3 px-4 text-right">ผลผลิตแห้งที่ได้ (กก.)</th>
+                  <th class="py-3 px-4 text-center">อัตราส่วน (สด:แห้ง)</th>
+                  <th class="py-3 px-4 text-right">ราคาเกณฑ์/กก.</th>
+                  <th class="py-3 px-4 text-right">มูลค่าประเมินผลผลิตแห้ง</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-gray-100 hover:bg-gray-50/60">
+                  <td class="py-3 px-4 font-bold text-amber-900">🌼 ดอกเก๊กฮวย</td>
+                  <td class="py-3 px-4 text-right font-mono font-bold">${herbProduceMap['เก๊กฮวย'].freshKg.toFixed(1)}</td>
+                  <td class="py-3 px-4 text-right font-mono text-gray-600">${herbProduceMap['เก๊กฮวย'].freshUsedKg.toFixed(1)}</td>
+                  <td class="py-3 px-4 text-right font-mono font-black text-emerald-800">${herbProduceMap['เก๊กฮวย'].dryKg.toFixed(1)}</td>
+                  <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold text-[11px]">8.00 : 1</span></td>
+                  <td class="py-3 px-4 text-right font-mono">250 บาท</td>
+                  <td class="py-3 px-4 text-right font-mono font-black text-amber-950">${formatBaht(herbProduceMap['เก๊กฮวย'].dryKg * 250)}</td>
+                </tr>
+                <tr class="border-b border-gray-100 hover:bg-gray-50/60">
+                  <td class="py-3 px-4 font-bold text-sky-900">🌿 ดอกคาโมมายล์</td>
+                  <td class="py-3 px-4 text-right font-mono font-bold">${herbProduceMap['คาโมมายล์'].freshKg.toFixed(1)}</td>
+                  <td class="py-3 px-4 text-right font-mono text-gray-600">${herbProduceMap['คาโมมายล์'].freshUsedKg.toFixed(1)}</td>
+                  <td class="py-3 px-4 text-right font-mono font-black text-emerald-800">${herbProduceMap['คาโมมายล์'].dryKg.toFixed(1)}</td>
+                  <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded-full bg-sky-100 text-sky-900 font-bold text-[11px]">6.00 : 1</span></td>
+                  <td class="py-3 px-4 text-right font-mono">450 บาท</td>
+                  <td class="py-3 px-4 text-right font-mono font-black text-sky-950">${formatBaht(herbProduceMap['คาโมมายล์'].dryKg * 450)}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="bg-emerald-50/80 font-black text-emerald-950">
+                  <td class="py-3 px-4">รวมทั้งหมด:</td>
+                  <td class="py-3 px-4 text-right font-mono">${totalFreshAll.toFixed(1)} กก.</td>
+                  <td class="py-3 px-4 text-right font-mono">${totalFreshUsedAll.toFixed(1)} กก.</td>
+                  <td class="py-3 px-4 text-right font-mono">${totalDryAll.toFixed(1)} กก.</td>
+                  <td class="py-3 px-4 text-center">-</td>
+                  <td class="py-3 px-4 text-right">-</td>
+                  <td class="py-3 px-4 text-right font-mono">${formatBaht(totalDryEstValue)}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
