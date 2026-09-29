@@ -104,9 +104,9 @@ export const FreshProduceComponent = {
     const filteredJarsProducedSum = filteredPackBatches.reduce((sum, b) => sum + (parseInt(b.jarsProduced) || 0), 0);
 
     const pricePerKg = appState.getProductPrice(selectedPool.herb, 'กก.');
-    const pricePerJar = appState.getProductPrice(selectedPool.herb, 'กระปุก');
+    const pricePerJar = appState.getProductPrice(selectedPool.herb, 'กระป๋อง');
     const products = appState.getProducts();
-    const cannedProduct = products.find(p => (p.unit === 'กระปุก' || p.unit === 'กระป๋อง') && (p.category.includes(selectedPool.herb) || p.name.includes(selectedPool.herb))) || {
+    const cannedProduct = products.find(p => (p.unit === 'กระป๋อง' || p.unit === 'กระป๋อง') && (p.category.includes(selectedPool.herb) || p.name.includes(selectedPool.herb))) || {
       id: selectedPool.isChrys ? 'PRD-003' : 'PRD-004',
       name: selectedPool.isChrys ? 'เก๊กฮวยกระป๋อง (50 G)' : 'คาโมมายล์กระป๋อง (50 G)',
       stock: selectedPool.isChrys ? 100 : 50,
@@ -184,13 +184,13 @@ export const FreshProduceComponent = {
           <!-- Card 3 -->
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-slate-300 transition-colors">
             <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">สินค้ากระปุก 50G</span>
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">สินค้ากระป๋อง 50G</span>
               <i class="fa-solid fa-jar text-slate-300 group-hover:text-slate-500 transition-colors"></i>
             </div>
             <div>
               <div class="flex items-baseline gap-1.5">
                 <span class="text-3xl font-light text-slate-900 tracking-tight">${currentJarsInStock}</span>
-                <span class="text-sm text-slate-500">กระปุก</span>
+                <span class="text-sm text-slate-500">กระป๋อง</span>
               </div>
               <div class="text-xs text-slate-500 mt-1.5 font-medium">
                 มูลค่า ~${formatBaht(currentJarsInStock * pricePerJar)}
@@ -234,7 +234,7 @@ export const FreshProduceComponent = {
                 ? 'border-slate-900 text-slate-900'
                 : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
             }">
-              2. แปรรูปบรรจุกระปุก
+              2. แปรรูปบรรจุกระป๋อง
             </button>
             <button data-tab="history" class="fresh-tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm transition-colors ${
               this.activeTab === 'history'
@@ -323,7 +323,7 @@ export const FreshProduceComponent = {
               </div>
             </div>
           ` : this.activeTab === 'canning' ? `
-            <!-- ===== TAB 2: แปรรูปบรรจุกระปุก ===== -->
+            <!-- ===== TAB 2: แปรรูปบรรจุกระป๋อง ===== -->
             <div class="space-y-6">
               
               <!-- Clean Process Pipeline Card -->
@@ -334,14 +334,14 @@ export const FreshProduceComponent = {
                 <div class="flex items-center justify-between mb-6">
                   <h3 class="text-base font-semibold text-slate-900">ข้อมูลมาตรฐานผลิตภัณฑ์</h3>
                   <span class="px-3 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
-                    1 กก. = 20 กระปุก
+                    1 กก. = 20 กระป๋อง
                   </span>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y md:divide-y-0 md:divide-x divide-slate-100">
                   <div class="pt-4 md:pt-0 md:px-6 first:pt-0 first:pl-0 last:pr-0">
                     <div class="text-sm text-slate-500 mb-1">ขนาดบรรจุภัณฑ์</div>
-                    <div class="text-lg font-semibold text-slate-900">50 กรัม / กระปุก</div>
-                    <div class="text-xs text-slate-400 mt-2">กระปุกมาตรฐานพร้อมฝาดึง</div>
+                    <div class="text-lg font-semibold text-slate-900">50 กรัม / กระป๋อง</div>
+                    <div class="text-xs text-slate-400 mt-2">กระป๋องมาตรฐานพร้อมฝาดึง</div>
                   </div>
                   <div class="pt-4 md:pt-0 md:px-6">
                     <div class="text-sm text-slate-500 mb-1">ราคาจำหน่าย</div>
@@ -350,7 +350,7 @@ export const FreshProduceComponent = {
                   </div>
                   <div class="pt-4 md:pt-0 md:px-6">
                     <div class="text-sm text-slate-500 mb-1">ศักยภาพผลิตปัจจุบัน</div>
-                    <div class="text-lg font-semibold text-slate-900">~${potentialJars} กระปุก</div>
+                    <div class="text-lg font-semibold text-slate-900">~${potentialJars} กระป๋อง</div>
                     <div class="text-xs text-slate-400 mt-2">จากสต็อกดอกแห้งที่มี</div>
                   </div>
                 </div>
@@ -370,7 +370,7 @@ export const FreshProduceComponent = {
                 <button data-subtab="canning" class="fresh-hist-subtab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   this.historySubTab === 'canning' ? 'bg-slate-800 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
                 }">
-                  ประวัติบรรจุกระปุก (${filteredPackBatches.length})
+                  ประวัติบรรจุกระป๋อง (${filteredPackBatches.length})
                 </button>
               </div>
 
@@ -419,7 +419,7 @@ export const FreshProduceComponent = {
                           <th class="px-6 py-4 whitespace-nowrap">วันที่บรรจุ</th>
                           <th class="px-6 py-4 whitespace-nowrap">รหัสล็อต</th>
                           <th class="px-6 py-4 whitespace-nowrap text-right">ดอกแห้งใช้ไป (กก.)</th>
-                          <th class="px-6 py-4 whitespace-nowrap text-right">ได้กระปุก</th>
+                          <th class="px-6 py-4 whitespace-nowrap text-right">ได้กระป๋อง</th>
                           <th class="px-6 py-4 whitespace-nowrap">ผู้บันทึก</th>
                         </tr>
                       </thead>
@@ -507,9 +507,9 @@ export const FreshProduceComponent = {
           <div class="hidden md:block absolute top-1/2 left-0 right-0 h-px bg-slate-200 -z-10" style="width: 150%; left: -25%;"></div>
           
           <button data-herb="${pool.herb}" class="start-canning-pool-btn bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl text-sm font-semibold transition-all shadow-md active:scale-95 ${!isReadyToPack ? 'opacity-50 cursor-not-allowed' : ''}" ${!isReadyToPack ? 'disabled' : ''}>
-            แปรรูปบรรจุกระปุก
+            แปรรูปบรรจุกระป๋อง
           </button>
-          <div class="text-xs text-slate-400 font-medium mt-3 bg-white px-2">1 กก. = 20 กระปุก</div>
+          <div class="text-xs text-slate-400 font-medium mt-3 bg-white px-2">1 กก. = 20 กระป๋อง</div>
         </div>
 
         <!-- Right: Jars -->
@@ -517,7 +517,7 @@ export const FreshProduceComponent = {
           <div class="w-16 h-16 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center mb-4 shadow-sm">
             <i class="fa-solid fa-jar text-2xl text-slate-400"></i>
           </div>
-          <div class="text-sm font-medium text-slate-500 mb-1">กระปุก 50G สำเร็จ</div>
+          <div class="text-sm font-medium text-slate-500 mb-1">กระป๋อง 50G สำเร็จ</div>
           <div class="text-3xl font-light text-slate-900 tracking-tight font-mono">${Math.floor(pool.actualDryKg * 20)} <span class="text-base text-slate-500 font-normal">กป.</span></div>
         </div>
 
@@ -580,7 +580,7 @@ export const FreshProduceComponent = {
       });
     });
 
-    // 5. Action buttons (Canning - ดอกแห้ง ➔ แบบกระปุก)
+    // 5. Action buttons (Canning - ดอกแห้ง ➔ แบบกระป๋อง)
     const startCanningBtns = document.querySelectorAll('.start-canning-pool-btn');
     startCanningBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -720,15 +720,15 @@ export const FreshProduceComponent = {
     } else {
       return `
         <div class="p-2.5 bg-white rounded-xl border border-gray-200">
-          <span class="text-[11px] text-gray-500 font-semibold block">1 กระปุก</span>
+          <span class="text-[11px] text-gray-500 font-semibold block">1 กระป๋อง</span>
           <span class="text-sm font-black text-emerald-800 font-mono">${(price * 1).toLocaleString()} บ.</span>
         </div>
         <div class="p-2.5 bg-white rounded-xl border border-gray-200">
-          <span class="text-[11px] text-gray-500 font-semibold block">5 กระปุก</span>
+          <span class="text-[11px] text-gray-500 font-semibold block">5 กระป๋อง</span>
           <span class="text-sm font-black text-emerald-800 font-mono">${(price * 5).toLocaleString()} บ.</span>
         </div>
         <div class="p-2.5 bg-white rounded-xl border border-gray-200">
-          <span class="text-[11px] text-gray-500 font-semibold block">20 กระปุก (~1 กก.)</span>
+          <span class="text-[11px] text-gray-500 font-semibold block">20 กระป๋อง (~1 กก.)</span>
           <span class="text-sm font-black text-emerald-800 font-mono">${(price * 20).toLocaleString()} บ.</span>
         </div>
       `;
@@ -788,7 +788,7 @@ export const FreshProduceComponent = {
     const defaultDryWeight = (pendingFreshWeight / ratio).toFixed(2);
     const today = new Date().toISOString().split('T')[0];
     const pricePerKg = appState.getProductPrice(herb, 'กก.');
-    const pricePerJar = appState.getProductPrice(herb, 'กระปุก');
+    const pricePerJar = appState.getProductPrice(herb, 'กระป๋อง');
 
     const contentHtml = `
       <form id="pool-drying-form" class="p-5 sm:p-6 space-y-4 bg-white text-gray-800 text-sm">
@@ -890,7 +890,7 @@ export const FreshProduceComponent = {
 
         </div>
 
-        <!-- แถวที่ 2.5: กล่อง Live Summary สรุปผลการอบและมูลค่าเศรษฐกิจ -->
+        <!-- แถวที่ 2.5: กระป๋อง Live Summary สรุปผลการอบและมูลค่าเศรษฐกิจ -->
         <div id="dry-live-summary-box" class="p-3.5 bg-gradient-to-r from-emerald-100/70 via-teal-50 to-amber-50 rounded-2xl border border-emerald-300 shadow-2xs space-y-1">
           <div class="flex items-center justify-between text-xs font-bold text-emerald-950">
             <span class="flex items-center gap-1.5">
@@ -1088,7 +1088,7 @@ export const FreshProduceComponent = {
 
   // -------------------------------------------------------------
   // Modal: Process Dry Herbs into Canned / Jar Packaging Products
-  // (ดอกแห้ง ➔ แบบกระปุก: กรอก กก. ดอกแห้ง -> คำนวณจำนวนกระปุกและมูลค่าทันที)
+  // (ดอกแห้ง ➔ แบบกระป๋อง: กรอก กก. ดอกแห้ง -> คำนวณจำนวนกระป๋องและมูลค่าทันที)
   // -------------------------------------------------------------
   openCanningModal(herb) {
     const dryingBatches = appState.getDryingBatches ? appState.getDryingBatches() : [];
@@ -1104,13 +1104,13 @@ export const FreshProduceComponent = {
     const totalDryAvailable = herbBatches.reduce((sum, b) => sum + (parseFloat(b.dryWeightKg) || 0), 0);
 
     if (totalDryAvailable <= 0) {
-      showToast(`ไม่มีดอก${herb}แห้งในคลังสำหรับบรรจุกระปุก กรุณาทำการอบแห้งก่อน`, 'warning');
+      showToast(`ไม่มีดอก${herb}แห้งในคลังสำหรับบรรจุกระป๋อง กรุณาทำการอบแห้งก่อน`, 'warning');
       return;
     }
 
     const today = new Date().toISOString().split('T')[0];
     const pricePerKg = isChrys ? 250 : (isCham ? 450 : 300);
-    const jarPrice50g = appState.getProductPrice(herb, 'กระปุก');
+    const jarPrice50g = appState.getProductPrice(herb, 'กระป๋อง');
     const defaultUsedKg = Math.min(totalDryAvailable, 5.0).toFixed(2);
     const initialJars = Math.floor(parseFloat(defaultUsedKg) * 20);
     const members = appState.getMembers ? appState.getMembers() : [];
@@ -1133,7 +1133,7 @@ export const FreshProduceComponent = {
               🌼 ดอก${herb}แห้ง ➔ กระป๋อง
             </span>
             <span class="px-2.5 py-1 rounded-xl text-xs font-bold text-emerald-900 bg-emerald-100 border border-emerald-300 shadow-2xs">
-              สูตร: 50 G (1 กก. = 20 กระปุก)
+              สูตร: 50 G (1 กก. = 20 กระป๋อง)
             </span>
           </div>
         </div>
@@ -1159,10 +1159,10 @@ export const FreshProduceComponent = {
                 2. ใช้ดอกแห้งกี่ กก. *
               </label>
               <div class="flex items-center gap-1">
-                <button type="button" id="use-1kg-btn" class="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-lg cursor-pointer transition-colors" title="ใช้ 1 กก. (20 กระปุก)">
+                <button type="button" id="use-1kg-btn" class="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-lg cursor-pointer transition-colors" title="ใช้ 1 กก. (20 กระป๋อง)">
                   1 กก.
                 </button>
-                <button type="button" id="use-5kg-btn" class="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-lg cursor-pointer transition-colors" title="ใช้ 5 กก. (100 กระปุก)">
+                <button type="button" id="use-5kg-btn" class="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-lg cursor-pointer transition-colors" title="ใช้ 5 กก. (100 กระป๋อง)">
                   5 กก.
                 </button>
                 <button type="button" id="use-all-dry-btn" class="text-[11px] font-bold text-teal-800 hover:text-teal-950 bg-teal-50 hover:bg-teal-100 border border-teal-300 px-1.5 py-0.5 rounded-lg cursor-pointer transition-colors">
@@ -1182,11 +1182,11 @@ export const FreshProduceComponent = {
             </span>
           </div>
 
-          <!-- ช่องที่ 3: ขนาดบรรจุภัณฑ์ & จำนวนกระปุกที่ได้ -->
+          <!-- ช่องที่ 3: ขนาดบรรจุภัณฑ์ & จำนวนกระป๋องที่ได้ -->
           <div class="p-3.5 bg-white rounded-2xl border-2 border-teal-600 shadow-2xs flex flex-col justify-between">
             <div class="flex items-center justify-between">
               <label for="canning-select-size" class="text-xs font-bold text-gray-800 uppercase">
-                3. ขนาด / ได้กี่กระปุก *
+                3. ขนาด / ได้กี่กระป๋อง *
               </label>
               <select id="canning-select-size" class="text-xs font-bold bg-teal-50 border border-teal-300 text-teal-950 rounded-lg px-2 py-0.5 focus:outline-none">
                 <option value="50" selected>50 G (50 กรัม) - มาตรฐาน (${jarPrice50g} บ./กป.)</option>
@@ -1197,35 +1197,35 @@ export const FreshProduceComponent = {
               <input type="number" step="1" min="1" id="canning-input-jars-count" value="${initialJars}" required
                 class="w-full pl-3 pr-16 py-1.5 rounded-xl border border-gray-300 text-lg font-black text-teal-900 focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono">
               <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-xs font-bold text-teal-700 pointer-events-none">
-                กระปุก
+                กระป๋อง
               </span>
             </div>
             <span class="text-[10px] text-teal-700 font-medium mt-1 block">
-              คำนวณอัตโนมัติ (1 กก. = 20 กระปุก)
+              คำนวณอัตโนมัติ (1 กก. = 20 กระป๋อง)
             </span>
           </div>
 
         </div>
 
-        <!-- แถวที่ 2.5: กล่อง Live Summary สรุปผลการบรรจุกระปุกและมูลค่าเศรษฐกิจ -->
+        <!-- แถวที่ 2.5: กระป๋อง Live Summary สรุปผลการบรรจุกระป๋องและมูลค่าเศรษฐกิจ -->
         <div id="canning-live-summary-box" class="p-3.5 bg-gradient-to-r from-teal-50 via-emerald-50 to-amber-50 rounded-2xl border border-teal-300 shadow-2xs space-y-1">
           <div class="flex items-center justify-between text-xs font-bold text-teal-950">
             <span class="flex items-center gap-1.5">
               <i class="fa-solid fa-jar text-teal-700 text-sm"></i>
-              <span>สรุปข้อมูลการบรรจุกระปุกและมูลค่าสินค้าสำเร็จรูป:</span>
+              <span>สรุปข้อมูลการบรรจุกระป๋องและมูลค่าสินค้าสำเร็จรูป:</span>
             </span>
             <span id="canning-live-unit-price-badge" class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-white text-teal-900 border border-teal-200">
-              ราคาขาย: ${formatBaht(jarPrice50g)}/กระปุก (50 G)
+              ราคาขาย: ${formatBaht(jarPrice50g)}/กระป๋อง (50 G)
             </span>
           </div>
           <div id="canning-live-summary-text" class="text-xs sm:text-sm font-medium text-gray-800 leading-relaxed pt-0.5">
             <div>
-              วันที่ <b>${formatThaiDate(today)}</b>: ใช้<b>ดอก${herb}แห้ง</b> <b class="text-amber-950 font-black font-mono">${defaultUsedKg}</b> กก. ➔ บรรจุได้ <b class="text-teal-900 font-black font-mono text-base">${initialJars}</b> กระปุก (ขนาด 50 G)
+              วันที่ <b>${formatThaiDate(today)}</b>: ใช้<b>ดอก${herb}แห้ง</b> <b class="text-amber-950 font-black font-mono">${defaultUsedKg}</b> กก. ➔ บรรจุได้ <b class="text-teal-900 font-black font-mono text-base">${initialJars}</b> กระป๋อง (ขนาด 50 G)
             </div>
             <div class="mt-2 pt-2 border-t border-teal-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-teal-950">
               <span class="flex items-center gap-1 font-bold">
                 <i class="fas fa-coins text-amber-600"></i>
-                <span>ประเมินมูลค่าสินค้าบรรจุกระปุกที่ได้:</span>
+                <span>ประเมินมูลค่าสินค้าบรรจุกระป๋องที่ได้:</span>
               </span>
               <div class="flex items-baseline gap-2 font-mono flex-wrap">
                 <span class="text-gray-700">มูลค่าเพิ่มเข้าคลัง:</span>
@@ -1256,7 +1256,7 @@ export const FreshProduceComponent = {
             <label for="canning-input-note" class="text-xs font-bold text-gray-700 block mb-1">
               หมายเหตุ / รายละเอียดล็อตบรรจุ
             </label>
-            <input type="text" id="canning-input-note" placeholder="เช่น บรรจุกระปุกซีลฝาดึง ติดสติกเกอร์ฉลาก อย." value="บรรจุกระป๋องมาตรฐาน 50 G ซีลฝาพร้อมจำหน่าย"
+            <input type="text" id="canning-input-note" placeholder="เช่น บรรจุกระป๋องซีลฝาดึง ติดสติกเกอร์ฉลาก อย." value="บรรจุกระป๋องมาตรฐาน 50 G ซีลฝาพร้อมจำหน่าย"
               class="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white shadow-2xs">
           </div>
         </div>
@@ -1268,7 +1268,7 @@ export const FreshProduceComponent = {
           </button>
           <button type="submit" id="submit-pool-canning-btn" class="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white text-xs sm:text-sm font-black shadow-sm transition-all cursor-pointer flex items-center gap-1.5">
             <i class="fa-solid fa-jar"></i>
-            <span>ยืนยันบันทึกการบรรจุกระปุกเข้าคลัง</span>
+            <span>ยืนยันบันทึกการบรรจุกระป๋องเข้าคลัง</span>
           </button>
         </div>
 
@@ -1276,7 +1276,7 @@ export const FreshProduceComponent = {
     `;
 
     openGlobalModal({
-      title: `🥫 บันทึกกระบวนการบรรจุกระปุก (ดอก${herb})`,
+      title: `🥫 บันทึกกระบวนการบรรจุกระป๋อง (ดอก${herb})`,
       icon: '',
       size: 'max-w-2xl',
       headerColor: 'bg-[#1b4332]',
@@ -1328,12 +1328,12 @@ export const FreshProduceComponent = {
 
           summaryText.innerHTML = `
             <div>
-              วันที่ <b>${formatThaiDate(selectedDateStr)}</b>: ใช้<b>ดอก${herb}แห้ง</b> <b class="text-amber-950 font-black font-mono">${dryVal.toFixed(2)}</b> กก. ➔ บรรจุได้ <b class="text-teal-900 font-black font-mono text-base">${jarsVal}</b> กระปุก (ขนาด ${sz} G)
+              วันที่ <b>${formatThaiDate(selectedDateStr)}</b>: ใช้<b>ดอก${herb}แห้ง</b> <b class="text-amber-950 font-black font-mono">${dryVal.toFixed(2)}</b> กก. ➔ บรรจุได้ <b class="text-teal-900 font-black font-mono text-base">${jarsVal}</b> กระป๋อง (ขนาด ${sz} G)
             </div>
             <div class="mt-2 pt-2 border-t border-teal-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-teal-950">
               <span class="flex items-center gap-1 font-bold">
                 <i class="fas fa-coins text-amber-600"></i>
-                <span>ประเมินมูลค่าสินค้าบรรจุกระปุกที่ได้:</span>
+                <span>ประเมินมูลค่าสินค้าบรรจุกระป๋องที่ได้:</span>
               </span>
               <div class="flex items-baseline gap-2 font-mono flex-wrap">
                 <span class="text-gray-700">มูลค่าเพิ่มเข้าคลัง:</span>
@@ -1343,7 +1343,7 @@ export const FreshProduceComponent = {
             </div>
           `;
           if (unitPriceBadge) {
-            unitPriceBadge.textContent = `ราคาขาย: ${formatBaht(curPrice)}/กระปุก (${sz} G)`;
+            unitPriceBadge.textContent = `ราคาขาย: ${formatBaht(curPrice)}/กระป๋อง (${sz} G)`;
           }
         };
 
@@ -1414,18 +1414,18 @@ export const FreshProduceComponent = {
               return;
             }
             if (jarsCount <= 0) {
-              showToast('จำนวนกระปุกต้องมากกว่า 0', 'error');
+              showToast('จำนวนกระป๋องต้องมากกว่า 0', 'error');
               return;
             }
 
             try {
               const res = appState.processHerbCanning(herb, dryWeight, `${sz} G`, jarsCount, operator, note, date);
               closeGlobalModal();
-              showToast(`บันทึกการบรรจุกระปุกสำเร็จ! ได้ ${res.productName} จำนวน ${res.jarsProduced} กระปุก เข้าคลังสินค้าเรียบร้อย`, 'success');
+              showToast(`บันทึกการบรรจุกระป๋องสำเร็จ! ได้ ${res.productName} จำนวน ${res.jarsProduced} กระป๋อง เข้าคลังสินค้าเรียบร้อย`, 'success');
               this.refreshView();
             } catch (err) {
               console.error(err);
-              showToast(err.message || 'เกิดข้อผิดพลาดในการบันทึกการบรรจุกระปุก', 'error');
+              showToast(err.message || 'เกิดข้อผิดพลาดในการบันทึกการบรรจุกระป๋อง', 'error');
             }
           });
         }

@@ -1,4 +1,4 @@
-// Plots Management Component with Leaflet Map Pinning & Modal Form
+﻿// Plots Management Component with Leaflet Map Pinning & Modal Form
 import { appState } from '../state.js';
 import { formatThaiArea, showToast, openGlobalModal, closeGlobalModal } from '../helpers.js';
 
@@ -391,7 +391,7 @@ export const PlotsComponent = {
                   <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                     <i class="fas fa-map-marker-alt text-lg animate-bounce mt-1"></i>
                   </div>
-                  <span class="text-[15px] font-bold tracking-wide">ปักหมุด ณ จุดที่คุณยืนอยู่ (GPS)</span>
+                  <span class="text-sm font-bold tracking-wide">ดึงพิกัด GPS ปัจจุบัน</span>
                 </button>
               </div>
             </div>
