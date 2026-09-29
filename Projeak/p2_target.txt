@@ -1,0 +1,94 @@
+  _handleSubmit(form) {
+    const formData = new FormData(form);
+    const productId = formData.get('product_id');
+    const quantity = parseFloat(formData.get('quantity')) || 0;
+    const unitPrice = parseFloat(formData.get('unit_price')) || 0;
+    const date = formData.get('date');
+    const sellerName = formData.get('seller_name');
+    const customerName = formData.get('customer_name');
+    const payment = formData.get('payment');
+    const note = formData.get('note');
+
+    if (!productId) { showToast('กรุณาเลือกสินค้า', 'error'); return; }
+    if (quantity <= 0) { showToast('จำนวนต้องมากกว่า 0', 'error'); return; }
+    if (unitPrice < 0) { showToast('ราคาต้องไม่ติดลบ', 'error'); return; }
+    if (!sellerName) { showToast('กรุณาระบุชื่อผู้ขาย', 'error'); return; }
+    if (!customerName) { showToast('กรุณาระบุชื่อผู้ซื้อ', 'error'); return; }
+
+    const product = appState.getProductById(productId);
+    if (!product) { showToast('ไม่พบข้อมูลสินค้าในระบบ', 'error'); return; }
+    if (quantity > product.stock) { showToast(`สต็อกไม่พอ (เหลือ ${product.stock} ${product.unit})`, 'error'); return; }
+
+    const customerSel = document.getElementById('sale-customer-select');
+    const customerId = customerSel ? customerSel.value : null;
+
+    let saleId = generateSaleId();
+    let remainingStock = 0;
+
+    try {
+      const deductResult = appState.deductProductStock(productId, quantity, customerName, unitPrice, date, customerId);
+      if (deductResult && deductResult.product) {
+        remainingStock = deductResult.product.stock;
+      }
+      if (deductResult && deductResult.sale && deductResult.sale.id) {
+        saleId = deductResult.sale.id;
+      }
+    } catch (e) {
+      const newStock = Math.max(0, parseFloat((product.stock - quantity).toFixed(2)));
+      appState.updateProduct(productId, { stock: newStock });
+      remainingStock = newStock;
+    }
+
+    // ⚡ Deduct bulk dry herbs from inventory if selling in กก.
+    if (product.unit === 'กก.' || product.unit === 'kg') {
+      try {
+        const inventory = appState.getInventory();
+        const targetHerb = product.name.includes('เก๊กฮวย') ? 'เก๊กฮวย' : (product.name.includes('คาโมมายล์') ? 'คาโมมายล์' : '');
+        if (targetHerb) {
+          const dryRecords = inventory.filter(i => i.type === 'dry' && i.herb === targetHerb && i.remainingKg > 0);
+          dryRecords.sort((a, b) => new Date(a.date) - new Date(b.date));
+          
+          let needed = quantity;
+          for (const rec of dryRecords) {
+            if (needed <= 0) break;
+            if (rec.remainingKg >= needed) {
+              rec.remainingKg = parseFloat((rec.remainingKg - needed).toFixed(2));
+              needed = 0;
+            } else {
+              needed = parseFloat((needed - rec.remainingKg).toFixed(2));
+              rec.remainingKg = 0;
+            }
+          }
+          appState.saveInventory(inventory);
+        }
+      } catch (e) {
+        console.error('Failed to deduct bulk inventory:', e);
+      }
+    }
+
+    const newSale = {
+      id: saleId,
+      productId,
+      productName: product.name,
+      unit: product.unit,
+      quantity,
+      unitPrice,
+      totalPrice: quantity * unitPrice,
+      date,
+      sellerName,
+      customerName,
+      payment,
+      note,
+      createdAt: new Date().toISOString()
+    };
+
+    const sales = getDirectSales();
+    sales.unshift(newSale);
+    saveDirectSales(sales);
+
+    form.reset();
+    showToast(`บันทึกการขายสำเร็จ! ตัดสต็อก ${product.name} เหลือ ${remainingStock} ${product.unit}`, 'success');
+    this.refreshView();
+
+    setTimeout(() => this._openReceipt(newSale.id), 300);
+  }

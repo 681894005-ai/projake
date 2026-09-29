@@ -1,0 +1,3 @@
+              <label for="edit-prod-unit" class="block text-xs font-semibold text-gray-500 uppercase mb-1">หน่วยเรียก *</label>
+              <input type="text" id="edit-prod-unit" name="unit" required value="${product.unit}"
+                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">

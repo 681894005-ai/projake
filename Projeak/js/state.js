@@ -494,7 +494,7 @@ const MOCK_PRODUCTS = [
     id: 'PRD-003',
     name: 'เก๊กฮวยกระป๋อง (50 G)',
     price: 150,
-    unit: 'กระปุก',
+    unit: 'กระป๋อง',
     stock: 100,
     category: 'เก๊กฮวย',
     updatedDate: '2026-07-01'
@@ -503,16 +503,16 @@ const MOCK_PRODUCTS = [
     id: 'PRD-004',
     name: 'คาโมมายล์กระป๋อง (50 G)',
     price: 100,
-    unit: 'กระปุก',
+    unit: 'กระป๋อง',
     stock: 50,
     category: 'คาโมมายล์',
     updatedDate: '2026-07-01'
   },
   {
     id: 'PRD-005',
-    name: 'ชาเก๊กฮวยแบบซองชง',
+    name: 'ชาเก๊กฮวยแบบกระป๋อง',
     price: 95,
-    unit: 'ซอง',
+    unit: 'กระป๋อง',
     stock: 80,
     category: 'เก๊กฮวย',
     updatedDate: '2026-07-05'
@@ -1965,7 +1965,7 @@ export class AppState {
               b.jarsProduced = 100;
             }
             if (b.productName) {
-              b.productName = b.productName.replace(/50\s*กก\./g, '50 G').replace(/50\s*กิโลกรัม/g, '50 G').replace(/50\s*กรัม/g, '50 G').replace('กระปุก', 'กระป๋อง');
+              b.productName = b.productName.replace(/50\s*กก\./g, '50 G').replace(/50\s*กิโลกรัม/g, '50 G').replace(/50\s*กรัม/g, '50 G').replace('กระป๋อง', 'กระป๋อง');
             }
             if (b.note) {
               b.note = b.note.replace(/50\s*กก\./g, '50 G').replace(/50\s*กิโลกรัม/g, '50 G');
@@ -1995,7 +1995,7 @@ export class AppState {
 
   /**
    * Process dry herb into canned/jar packaging products
-   * (ดอกแห้ง > แบบกระปุก: สูตร 50 G ต่อ 1 กระปุก, 1 กก. = 20 กระปุก)
+   * (ดอกแห้ง > แบบกระป๋อง: สูตร 50 G ต่อ 1 กระป๋อง, 1 กก. = 20 กระป๋อง)
    */
   processHerbCanning(herbType, dryUsedKg, packageSizeUnit = '50 G', jarsCount = null, operatorName = '', note = '', processedDate = null) {
     const isChrys = herbType === 'เก๊กฮวย' || herbType.includes('เก๊กฮวย');
@@ -2038,7 +2038,7 @@ export class AppState {
 
     // 2. Find canned product in products catalog and increase jar stock
     const products = this.getProducts();
-    let cannedProduct = products.find(p => (p.unit === 'กระปุก' || p.unit === 'กระป๋อง') && (p.category.includes(targetHerb) || p.name.includes(targetHerb)));
+    let cannedProduct = products.find(p => (p.unit === 'กระป๋อง' || p.unit === 'กระป๋อง') && (p.category.includes(targetHerb) || p.name.includes(targetHerb)));
 
     if (cannedProduct) {
       this.updateProduct(cannedProduct.id, {
@@ -2072,7 +2072,7 @@ export class AppState {
   recordSale(cropId, amount, price, customer, date, saleType = 'bulk', customerId = null) {
     const amt = parseFloat(amount) || 0;
     const prc = parseFloat(price) || 0;
-    if (amt <= 0) throw new Error(saleType === 'bulk' ? 'ปริมาณสมุนไพรอบแห้งที่ขายต้องมากกว่า 0 กก.' : 'จำนวนกระปุกที่ขายต้องมากกว่า 0 กระปุก');
+    if (amt <= 0) throw new Error(saleType === 'bulk' ? 'ปริมาณสมุนไพรอบแห้งที่ขายต้องมากกว่า 0 กก.' : 'จำนวนกระป๋องที่ขายต้องมากกว่า 0 กระป๋อง');
     if (prc <= 0) throw new Error('ราคาต่อหน่วยต้องมากกว่า 0 บาท');
 
     // 1. Check Inventory
@@ -2081,7 +2081,7 @@ export class AppState {
     if (invIndex === -1) throw new Error('ไม่พบล็อตสินค้านี้ในคลังสินค้า');
     
     const inv = inventory[invIndex];
-    const jarCapacity = 0.05; // 50g per jar (0.05 kg) as requested (50 G ต่อ 1 กระปุก)
+    const jarCapacity = 0.05; // 50g per jar (0.05 kg) as requested (50 G ต่อ 1 กระป๋อง)
 
     let weightToDeduct = amt;
     if (saleType === 'jar') {
@@ -2093,7 +2093,7 @@ export class AppState {
         throw new Error(`จำนวนสินค้าล็อตนี้ไม่เพียงพอในคลัง (คงเหลือ ${inv.dryStockKg} กก., ต้องการขาย ${amt} กก.)`);
       } else {
         const maxJarsAvailable = Math.floor(inv.dryStockKg / jarCapacity);
-        throw new Error(`วัตถุดิบอบแห้งในคลังไม่เพียงพอสำหรับบรรจุขาย (คงเหลือ ${inv.dryStockKg} กก., เทียบเท่าสูงสุด ${maxJarsAvailable} กระปุก, ต้องการขาย ${amt} กระปุก)`);
+        throw new Error(`วัตถุดิบอบแห้งในคลังไม่เพียงพอสำหรับบรรจุขาย (คงเหลือ ${inv.dryStockKg} กก., เทียบเท่าสูงสุด ${maxJarsAvailable} กระป๋อง, ต้องการขาย ${amt} กระป๋อง)`);
       }
     }
 
@@ -2386,14 +2386,26 @@ export class AppState {
         return [...MOCK_PRODUCTS];
       }
       let products = JSON.parse(data) || [];
+      
+      // AUTO-MIGRATE: Clean up old units based on strict criteria (กก. and กระป๋อง only)
+      let needsSave = false;
+      products.forEach(p => {
+        if (p.unit === 'กระปุก' || p.unit === 'ซอง' || p.unit === 'กล่อง' || p.unit === 'ขวด' || p.unit === 'custom') {
+          p.unit = 'กระป๋อง';
+          needsSave = true;
+        }
+      });
+      if (needsSave) {
+        localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+      }
 
-      // Auto-migrate to v6: เก๊กฮวยกระป๋อง 50G 150, คาโมมายด์กระป๋อง 50 G 100, เก๊กฮวยอบแห้ง 1 KG 250, คาโมมายด์อบแห้ง กิโลล่ะ 450
+      // Auto-migrate to v6: เก๊กฮวยกระป๋อง 50G 150, คาโมมายด์กระป๋อง 50 G 100...
       if (!migrated) {
         const defaultPriceMap = {
           'PRD-001': { price: 250, name: 'ดอกเก๊กฮวยอบแห้ง (1 กก.)', unit: 'กก.' },
           'PRD-002': { price: 450, name: 'ดอกคาโมมายล์อบแห้ง (1 กก.)', unit: 'กก.' },
-          'PRD-003': { price: 150, name: 'เก๊กฮวยกระป๋อง (50 G)', unit: 'กระปุก' },
-          'PRD-004': { price: 100, name: 'คาโมมายล์กระป๋อง (50 G)', unit: 'กระปุก' }
+          'PRD-003': { price: 150, name: 'เก๊กฮวยกระป๋อง (50 G)', unit: 'กระป๋อง' },
+          'PRD-004': { price: 100, name: 'คาโมมายล์กระป๋อง (50 G)', unit: 'กระป๋อง' }
         };
 
         products = products.map(p => {
@@ -2429,8 +2441,8 @@ export class AppState {
    * Helper to get current product price by herb type and unit
    * e.g. getProductPrice('เก๊กฮวย', 'กก.') -> 250
    * e.g. getProductPrice('คาโมมายล์', 'กก.') -> 450
-   * e.g. getProductPrice('เก๊กฮวย', 'กระปุก') -> 150 (50 G)
-   * e.g. getProductPrice('คาโมมายล์', 'กระปุก') -> 100 (50 G)
+   * e.g. getProductPrice('เก๊กฮวย', 'กระป๋อง') -> 150 (50 G)
+   * e.g. getProductPrice('คาโมมายล์', 'กระป๋อง') -> 100 (50 G)
    */
   getProductPrice(herbType = '', unit = 'กก.') {
     const products = this.getProducts();
@@ -2438,7 +2450,7 @@ export class AppState {
     const isCham = herbType.includes('คาโมมายล์');
     
     const found = products.find(p => {
-      const matchUnit = unit === 'กก.' ? (p.unit === 'กก.' || p.unit === 'kg') : (p.unit === 'กระปุก' || p.unit === 'กระป๋อง');
+      const matchUnit = unit === 'กก.' ? (p.unit === 'กก.' || p.unit === 'kg') : (p.unit === 'กระป๋อง' || p.unit === 'กระป๋อง');
       if (!matchUnit) return false;
       if (isChrys && (p.name.includes('เก๊กฮวย') || p.category.includes('เก๊กฮวย'))) return true;
       if (isCham && (p.name.includes('คาโมมายล์') || p.category.includes('คาโมมายล์'))) return true;

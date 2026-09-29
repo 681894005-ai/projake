@@ -1,0 +1,178 @@
+$file = "c:\\Users\\PC\\Documents\\Projeak\\js\\components\\sales.js"
+$content = Get-Content $file -Raw -Encoding UTF8
+
+$bindFormRegex = '(?s)_bindForm\(\) \{.*?(?=  _handleSubmit\(form\) \{)'
+$newBindForm = @'
+  _bindForm() {
+    const productSel   = document.getElementById('sale-product-id');
+    const qtyInput     = document.getElementById('sale-quantity');
+    const priceInput   = document.getElementById('sale-unit-price');
+    const totalDisplay = document.getElementById('sale-total-display');
+    const unitDisplay  = document.getElementById('sale-unit-display');
+    const stockWarning = document.getElementById('sale-stock-warning');
+    const sellerSel    = document.getElementById('sale-seller-select');
+    const customerSel  = document.getElementById('sale-customer-select');
+    const sellerInput  = document.getElementById('sale-seller-name');
+    const customerInput= document.getElementById('sale-customer-name');
+
+    const updateTotal = () => {
+      const qty   = parseFloat(qtyInput?.value) || 0;
+      const price = parseFloat(priceInput?.value) || 0;
+      const total = qty * price;
+      if (totalDisplay) totalDisplay.textContent = `${total.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2})} บาท`;
+    };
+
+    if (productSel) {
+      productSel.addEventListener('change', () => {
+        const opt = productSel.selectedOptions[0];
+        if (opt && opt.value) {
+          const price = parseFloat(opt.getAttribute('data-price')) || 0;
+          const unit  = opt.getAttribute('data-unit') || 'หน่วย';
+          const stock = parseFloat(opt.getAttribute('data-stock')) || 0;
+          if (priceInput) priceInput.value = price;
+          if (unitDisplay) unitDisplay.textContent = unit;
+          if (stockWarning) {
+            const warning = stockWarning.querySelector('span');
+            if (stock === 0) {
+              stockWarning.classList.remove('hidden');
+              if (warning) warning.textContent = `สินค้านี้หมดสต็อก! คงเหลือ 0 ${unit}`;
+            } else if (stock < 10) {
+              stockWarning.classList.remove('hidden');
+              if (warning) warning.textContent = `เหลือน้อย! คงเหลือ ${stock} ${unit} เท่านั้น`;
+            } else {
+              stockWarning.classList.add('hidden');
+            }
+          }
+          updateTotal();
+        }
+      });
+    }
+    if (qtyInput)   qtyInput.addEventListener('input', updateTotal);
+    if (priceInput) priceInput.addEventListener('input', updateTotal);
+
+    if (sellerSel) {
+      sellerSel.addEventListener('change', () => {
+        if (sellerSel.value && sellerInput) sellerInput.value = sellerSel.value;
+      });
+    }
+    if (customerSel) {
+      customerSel.addEventListener('change', () => {
+        if (customerSel.value && customerInput) customerInput.value = customerSel.value;
+      });
+    }
+
+    const addBtn = document.getElementById('add-to-cart-btn');
+    if (addBtn) {
+      addBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this._handleAddToCart();
+      });
+    }
+
+    const cartTable = document.getElementById('cart-items-tbody');
+    if (cartTable) {
+        cartTable.addEventListener('click', (e) => {
+            const btn = e.target.closest('.remove-cart-item-btn');
+            if (btn) {
+                const idx = parseInt(btn.getAttribute('data-index'), 10);
+                this.currentCart.splice(idx, 1);
+                this._renderCartItems();
+            }
+        });
+    }
+
+    const form = document.getElementById('direct-sale-form');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this._handleSubmit(form);
+      });
+
+      form.addEventListener('reset', () => {
+        setTimeout(() => {
+          this.currentCart = [];
+          this._renderCartItems();
+          if (totalDisplay) totalDisplay.textContent = '0.00 บาท';
+          if (unitDisplay)  unitDisplay.textContent = 'หน่วย';
+          if (stockWarning) stockWarning.classList.add('hidden');
+        }, 0);
+      });
+    }
+  },
+
+  _handleAddToCart() {
+      const productSel = document.getElementById('sale-product-id');
+      const opt = productSel?.selectedOptions[0];
+      if (!opt || !opt.value) { showToast('กรุณาเลือกสินค้า', 'error'); return; }
+  
+      const productId   = opt.value;
+      const product     = appState.getProductById(productId);
+      const productName = product ? product.name : (opt.text || 'สินค้า');
+      const unit        = opt.getAttribute('data-unit') || (product ? product.unit : 'หน่วย');
+      const quantity    = parseFloat(document.getElementById('sale-quantity')?.value) || 0;
+      const unitPrice   = parseFloat(document.getElementById('sale-unit-price')?.value) || 0;
+      const stock       = parseFloat(opt.getAttribute('data-stock')) || 0;
+
+      if (quantity <= 0) { showToast('กรุณาระบุจำนวน', 'error'); return; }
+      if (unitPrice < 0) { showToast('กรุณาระบุราคาต่อหน่วย', 'error'); return; }
+      
+      const existingQty = this.currentCart.reduce((sum, item) => item.productId === productId ? sum + item.quantity : sum, 0);
+      if (product && (existingQty + quantity) > stock) {
+          showToast(`สต็อกไม่พอ! (ในสต็อกมี ${stock} ${unit})`, 'error');
+          return;
+      }
+
+      this.currentCart.push({
+          productId, productName, unit, quantity, unitPrice, totalPrice: quantity * unitPrice
+      });
+
+      productSel.value = '';
+      document.getElementById('sale-quantity').value = '';
+      document.getElementById('sale-unit-price').value = '';
+      document.getElementById('sale-total-display').textContent = '0.00 บาท';
+      document.getElementById('sale-stock-warning').classList.add('hidden');
+
+      this._renderCartItems();
+  },
+
+  _renderCartItems() {
+      const tbody = document.getElementById('cart-items-tbody');
+      const summaryTotal = document.getElementById('cart-summary-total');
+      const wrapper = document.getElementById('cart-items-wrapper');
+      
+      if (!tbody) return;
+
+      if (this.currentCart.length === 0) {
+          wrapper.classList.add('hidden');
+          return;
+      }
+      
+      wrapper.classList.remove('hidden');
+      
+      let html = '';
+      let grandTotal = 0;
+      this.currentCart.forEach((item, idx) => {
+          grandTotal += item.totalPrice;
+          html += `
+            <tr class="border-b border-gray-100 last:border-0 hover:bg-slate-50">
+              <td class="py-2 px-3 text-sm font-bold text-gray-800">${item.productName}</td>
+              <td class="py-2 px-3 text-center text-sm font-bold text-emerald-700">${item.quantity.toLocaleString()} ${item.unit}</td>
+              <td class="py-2 px-3 text-right text-sm text-gray-600">${item.unitPrice.toLocaleString('th-TH', {minimumFractionDigits:2})}</td>
+              <td class="py-2 px-3 text-right text-sm font-black text-gray-900">${item.totalPrice.toLocaleString('th-TH', {minimumFractionDigits:2})}</td>
+              <td class="py-2 px-3 text-right">
+                <button type="button" class="remove-cart-item-btn text-rose-500 hover:text-rose-700 p-1" data-index="${idx}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+      });
+      tbody.innerHTML = html;
+      if (summaryTotal) summaryTotal.textContent = `${grandTotal.toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2})} บาท`;
+  },
+
+'@
+
+$content = $content -replace $bindFormRegex, $newBindForm
+[System.IO.File]::WriteAllText($file, $content, [System.Text.Encoding]::UTF8)
+Write-Output "Patched bindForm!"

@@ -1,0 +1,57 @@
+  _bindForm() {
+    const totalDisplay = document.getElementById('sale-total-display');
+    const unitDisplay  = document.getElementById('sale-unit-display');
+    const productSel   = document.getElementById('sale-product-id');
+    const qtyInput     = document.getElementById('sale-quantity');
+    const priceInput   = document.getElementById('sale-unit-price');
+    const stockWarning = document.getElementById('sale-stock-warning');
+
+    const updateCalc = () => {
+      const q = parseFloat(qtyInput.value) || 0;
+      const p = parseFloat(priceInput.value) || 0;
+      totalDisplay.textContent = (q * p).toLocaleString('th-TH', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' บาท';
+    };
+
+    if (qtyInput) qtyInput.addEventListener('input', updateCalc);
+    if (priceInput) priceInput.addEventListener('input', updateCalc);
+
+    if (productSel) {
+      productSel.addEventListener('change', () => {
+        const opt = productSel.selectedOptions[0];
+        if (opt && opt.value) {
+          priceInput.value = opt.getAttribute('data-price') || '';
+          unitDisplay.textContent = opt.getAttribute('data-unit') || 'หน่วย';
+          
+          const stock = parseFloat(opt.getAttribute('data-stock')) || 0;
+          if (stock <= 5) {
+            stockWarning.classList.remove('hidden');
+            stockWarning.innerHTML = `<i class="fas fa-exclamation-triangle"></i> สินค้าในสต็อกเหลือ ${stock} ${opt.getAttribute('data-unit')}`;
+          } else {
+            stockWarning.classList.add('hidden');
+          }
+          updateCalc();
+        } else {
+          priceInput.value = '';
+          unitDisplay.textContent = 'หน่วย';
+          stockWarning.classList.add('hidden');
+          updateCalc();
+        }
+      });
+    }
+
+    const form = document.getElementById('direct-sale-form');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this._handleSubmit(form);
+      });
+
+      form.addEventListener('reset', () => {
+        setTimeout(() => {
+          totalDisplay.textContent = '0.00 บาท';
+          unitDisplay.textContent = 'หน่วย';
+          stockWarning.classList.add('hidden');
+        }, 0);
+      });
+    }
+  },

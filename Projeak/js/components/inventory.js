@@ -1,4 +1,4 @@
-// Warehouse / Product Inventory Table Component (คลังสินค้า - ตารางสินค้าและสต็อกคงเหลือ)
+﻿// Warehouse / Product Inventory Table Component (คลังสินค้า - ตารางสินค้าและสต็อกคงเหลือ)
 import { appState } from '../state.js';
 import { formatThaiDate, formatBaht, showToast, openGlobalModal, closeGlobalModal } from '../helpers.js';
 
@@ -79,8 +79,8 @@ export const InventoryComponent = {
         ${activeUnits.map(unit => {
           const totalVal = unitTotals[unit];
           const isKg = unit === 'กก.';
-          const isJar = unit === 'กระปุก';
-          const isPouch = unit === 'ซอง';
+          const isJar = unit === 'กระป๋อง';
+          
 
           let icon = 'fas fa-boxes-stacked';
           let iconBg = 'bg-emerald-50 text-emerald-700';
@@ -94,11 +94,8 @@ export const InventoryComponent = {
             icon = 'fas fa-box-archive';
             iconBg = 'bg-sky-100 text-sky-800';
             textColor = 'text-sky-950';
-          } else if (isPouch) {
-            icon = 'fas fa-cube';
-            iconBg = 'bg-amber-100 text-amber-800';
-            textColor = 'text-amber-950';
-          }
+            }
+
 
           const displayValue = isKg ? totalVal.toFixed(2) : totalVal.toLocaleString();
 
@@ -138,16 +135,16 @@ export const InventoryComponent = {
     // 3.5 Generate Standard Price Reference Bar (เกณฑ์ราคาขายผลผลิตมาตรฐานวิสาหกิจ)
     const prdChrysBulk = allProducts.find(p => p.id === 'PRD-001') || { id: 'PRD-001', name: 'ดอกเก๊กฮวยอบแห้ง (1 กก.)', price: 250, unit: 'กก.', stock: 0 };
     const prdChamBulk = allProducts.find(p => p.id === 'PRD-002') || { id: 'PRD-002', name: 'ดอกคาโมมายล์อบแห้ง (1 กก.)', price: 450, unit: 'กก.', stock: 0 };
-    const prdChrysJar = allProducts.find(p => p.id === 'PRD-003') || { id: 'PRD-003', name: 'เก๊กฮวยกระป๋อง (50 G)', price: 150, unit: 'กระปุก', stock: 100 };
-    const prdChamJar = allProducts.find(p => p.id === 'PRD-004') || { id: 'PRD-004', name: 'คาโมมายล์กระป๋อง (50 G)', price: 100, unit: 'กระปุก', stock: 50 };
+    const prdChrysJar = allProducts.find(p => p.id === 'PRD-003') || { id: 'PRD-003', name: 'เก๊กฮวยกระป๋อง (50 G)', price: 150, unit: 'กระป๋อง', stock: 100 };
+    const prdChamJar = allProducts.find(p => p.id === 'PRD-004') || { id: 'PRD-004', name: 'คาโมมายล์กระป๋อง (50 G)', price: 100, unit: 'กระป๋อง', stock: 50 };
 
     const standardPriceItems = [
       {
         id: prdChamJar.id,
         name: prdChamJar.name || 'คาโมมายล์กระป๋อง (50 G)',
-        spec: 'ขนาด 50 G / กระปุก',
+        spec: 'ขนาด 50 G / กระป๋อง',
         price: prdChamJar.price,
-        unit: 'กระปุก',
+        unit: 'กระป๋อง',
         stock: prdChamJar.stock,
         icon: '🌿',
         stripe: 'bg-sky-500',
@@ -160,9 +157,9 @@ export const InventoryComponent = {
       {
         id: prdChrysJar.id,
         name: prdChrysJar.name || 'เก๊กฮวยกระป๋อง (50 G)',
-        spec: 'ขนาด 50 G / กระปุก',
+        spec: 'ขนาด 50 G / กระป๋อง',
         price: prdChrysJar.price,
-        unit: 'กระปุก',
+        unit: 'กระป๋อง',
         stock: prdChrysJar.stock,
         icon: '🌼',
         stripe: 'bg-amber-400',
@@ -431,13 +428,13 @@ export const InventoryComponent = {
       `
       : filteredProducts.map(p => {
           const isKg = p.unit === 'กก.';
-          const isJar = p.unit === 'กระปุก';
-          const isPouch = p.unit === 'ซอง';
+          const isJar = p.unit === 'กระป๋อง';
+          
 
           let unitBadgeStyle = 'bg-gray-100 text-gray-700 border-gray-200';
           if (isKg) unitBadgeStyle = 'bg-emerald-50 text-emerald-800 border-emerald-200';
           else if (isJar) unitBadgeStyle = 'bg-sky-50 text-sky-800 border-sky-200';
-          else if (isPouch) unitBadgeStyle = 'bg-amber-50 text-amber-800 border-amber-200';
+          
 
           const stockDisplay = isKg ? parseFloat(p.stock || 0).toFixed(2) : (p.stock || 0).toLocaleString();
 
@@ -545,7 +542,7 @@ export const InventoryComponent = {
           </div>
         </div>
 
-        <!-- กล่องสรุปภาพรวม: แสดงจำนวนสินค้ารวมทั้งหมดในคลัง แยกตามหน่วยเรียกชัดเจน -->
+        <!-- กระป๋องสรุปภาพรวม: แสดงจำนวนสินค้ารวมทั้งหมดในคลัง แยกตามหน่วยเรียกชัดเจน -->
         ${summaryCardsHtml}
 
         <!-- ===== Enterprise Lifecycle Flow Banner (วงจรการทำงาน & อัตราส่วนแปรรูป 10:1) ===== -->
@@ -949,15 +946,15 @@ export const InventoryComponent = {
     } else {
       return `
         <div class="p-2.5 bg-white rounded-xl border border-gray-200">
-          <span class="text-[11px] text-gray-500 font-semibold block">1 กระปุก</span>
+          <span class="text-[11px] text-gray-500 font-semibold block">1 กระป๋อง</span>
           <span class="text-sm font-black text-emerald-800 font-mono">${(price * 1).toLocaleString()} บ.</span>
         </div>
         <div class="p-2.5 bg-white rounded-xl border border-gray-200">
-          <span class="text-[11px] text-gray-500 font-semibold block">5 กระปุก</span>
+          <span class="text-[11px] text-gray-500 font-semibold block">5 กระป๋อง</span>
           <span class="text-sm font-black text-emerald-800 font-mono">${(price * 5).toLocaleString()} บ.</span>
         </div>
         <div class="p-2.5 bg-white rounded-xl border border-gray-200">
-          <span class="text-[11px] text-gray-500 font-semibold block">20 กระปุก (~1 กก.)</span>
+          <span class="text-[11px] text-gray-500 font-semibold block">20 กระป๋อง (~1 กก.)</span>
           <span class="text-sm font-black text-emerald-800 font-mono">${(price * 20).toLocaleString()} บ.</span>
         </div>
       `;
@@ -1010,16 +1007,10 @@ export const InventoryComponent = {
             <div>
               <label for="prod-unit" class="block text-xs font-semibold text-gray-500 uppercase mb-1">หน่วยเรียก *</label>
               <div class="flex items-center gap-2">
-                <select id="prod-unit-select" class="px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                <select id="prod-unit" name="unit" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
                   <option value="กก." ${defaultUnit === 'กก.' ? 'selected' : ''}>กก.</option>
                   <option value="กระป๋อง" ${defaultUnit === 'กระป๋อง' ? 'selected' : ''}>กระป๋อง</option>
-                  <option value="ซอง" ${defaultUnit === 'ซอง' ? 'selected' : ''}>ซอง</option>
-                  <option value="กล่อง" ${defaultUnit === 'กล่อง' ? 'selected' : ''}>กล่อง</option>
-                  <option value="ขวด" ${defaultUnit === 'ขวด' ? 'selected' : ''}>ขวด</option>
-                  <option value="custom">-- ระบุเอง --</option>
                 </select>
-                <input type="text" id="prod-unit" name="unit" required value="${defaultUnit}" placeholder="เช่น กก., กระป๋อง"
-                  class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
             </div>
 
@@ -1051,18 +1042,7 @@ export const InventoryComponent = {
       headerColor: 'bg-[#1e4620]',
       content: formHtml,
       onRender: (dialog) => {
-        const unitSelect = dialog.querySelector('#prod-unit-select');
-        const unitInput = dialog.querySelector('#prod-unit');
-        if (unitSelect && unitInput) {
-          unitSelect.addEventListener('change', () => {
-            if (unitSelect.value !== 'custom') {
-              unitInput.value = unitSelect.value;
-            } else {
-              unitInput.value = '';
-              unitInput.focus();
-            }
-          });
-        }
+        
 
         const form = dialog.querySelector('#global-add-product-form');
         if (form) {
@@ -1124,8 +1104,10 @@ export const InventoryComponent = {
 
             <div>
               <label for="edit-prod-unit" class="block text-xs font-semibold text-gray-500 uppercase mb-1">หน่วยเรียก *</label>
-              <input type="text" id="edit-prod-unit" name="unit" required value="${product.unit}"
-                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <select id="edit-prod-unit" name="unit" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                <option value="กก." ${product.unit === 'กก.' ? 'selected' : ''}>กก.</option>
+                <option value="กระป๋อง" ${product.unit === 'กระป๋อง' ? 'selected' : ''}>กระป๋อง</option>
+              </select>
             </div>
 
             <div class="md:col-span-2">

@@ -1,0 +1,2 @@
+            <!-- Submit -->
+            <div class="flex justify-end pt-2 border-t border-gray-100">

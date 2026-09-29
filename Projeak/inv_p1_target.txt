@@ -1,0 +1,13 @@
+              <label for="prod-unit" class="block text-xs font-semibold text-gray-500 uppercase mb-1">หน่วยเรียก *</label>
+              <div class="flex items-center gap-2">
+                <select id="prod-unit-select" class="px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                  <option value="กก." ${defaultUnit === 'กก.' ? 'selected' : ''}>กก.</option>
+                  <option value="กระป๋อง" ${defaultUnit === 'กระป๋อง' ? 'selected' : ''}>กระป๋อง</option>
+                  
+                  
+                  
+                  <option value="custom">-- ระบุเอง --</option>
+                </select>
+                <input type="text" id="prod-unit" name="unit" required value="${defaultUnit}" placeholder="เช่น กก., กระป๋อง"
+                  class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              </div>

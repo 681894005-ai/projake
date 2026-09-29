@@ -5,12 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบวิสาหกิจชุมชนสมุนไพรอบแห้ง</title>
   
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+          },
           colors: {
             herbal: {
               50: '#f4f9f4',
@@ -54,7 +62,7 @@
   <script src="js/libs/chart.umd.min.js"></script>
 
   <!-- Custom CSS for Premium Design -->
-  <link rel="stylesheet" href="css/styles.css?v=5">
+  <link rel="stylesheet" href="css/styles.css?v=6">
 </head>
 <body class="bg-[#f8fafc] text-slate-800 min-h-screen flex antialiased">
 
@@ -71,7 +79,7 @@
           <i class="fas fa-leaf text-xl text-white"></i>
         </div>
         <div>
-          <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">วิสาหกิจชุมชน</span>
+          <span class="text-[10px] font-bold text-emerald-400/70 uppercase tracking-widest block">วิสาหกิจชุมชน</span>
           <span class="text-sm font-extrabold text-white block truncate w-44 enterprise-name-display tracking-tight">วิสาหกิจชุมชนสมุนไพรอบแห้ง</span>
         </div>
       </div>
@@ -86,7 +94,7 @@
       
       <!-- หน้าแรก / แดชบอร์ด -->
       <a href="#" data-view="dashboard" class="sidebar-link active flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-gauge-high text-lg w-5 text-emerald-400"></i>
+        <i class="fa-solid fa-gauge-high text-lg w-5 text-emerald-400/70"></i>
         <span>แดชบอร์ดภาพรวม</span>
       </a>
 
@@ -97,43 +105,43 @@
 
       <!-- 1. จัดการสมาชิก -->
       <a href="#" data-view="members" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-users text-base w-5 text-teal-400"></i>
+        <i class="fa-solid fa-users text-base w-5 text-emerald-400/70"></i>
         <span>1. จัดการสมาชิก</span>
       </a>
 
       <!-- 2. จัดการแปลงปลูก -->
       <a href="#" data-view="plots" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-map-location-dot text-base w-5 text-lime-400"></i>
+        <i class="fa-solid fa-map-location-dot text-base w-5 text-emerald-400/70"></i>
         <span>2. จัดการแปลงปลูก</span>
       </a>
 
       <!-- 3. จัดการรอบปลูก -->
       <a href="#" data-view="crops" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-seedling text-base w-5 text-green-400"></i>
+        <i class="fa-solid fa-seedling text-base w-5 text-emerald-400/70"></i>
         <span>3. จัดการรอบปลูก</span>
       </a>
 
       <!-- 4. สต็อกรวม -->
       <a href="#" data-view="inventory" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-boxes-stacked text-base w-5 text-amber-400"></i>
+        <i class="fa-solid fa-boxes-stacked text-base w-5 text-emerald-400/70"></i>
         <span>4. สต็อกรวม</span>
       </a>
 
       <!-- 5. จัดการขาย -->
       <a href="#" data-view="sales" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-store text-base w-5 text-emerald-400"></i>
+        <i class="fa-solid fa-store text-base w-5 text-emerald-400/70"></i>
         <span>5. จัดการขาย</span>
       </a>
 
       <!-- 7. รายงานสรุป -->
       <a href="#" data-view="cost-revenue" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-chart-pie text-base w-5 text-indigo-400"></i>
+        <i class="fa-solid fa-chart-pie text-base w-5 text-emerald-400/70"></i>
         <span>7. รายงานสรุป</span>
       </a>
 
       <!-- 8. ประวัติการขาย/ประวัติการปลูก -->
       <a href="#" data-view="crop-history" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-clock-rotate-left text-base w-5 text-teal-300"></i>
+        <i class="fa-solid fa-clock-rotate-left text-base w-5 text-emerald-400/70"></i>
         <span>8. ประวัติการขาย/ประวัติการปลูก</span>
       </a>
 
@@ -142,21 +150,21 @@
         <span>บริการและระบบอื่น</span>
       </div>
 
-      <!-- การเก็บเกี่ยว / ผลผลิตสด (โรงอบ) -->
+      <!-- จัดการโรงอบแห้ง -->
       <a href="#" data-view="fresh-produce" class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-fire-burner text-base w-5 text-amber-400"></i>
-        <span>การเก็บเกี่ยว / ผลผลิตสด (โรงอบ)</span>
+        <i class="fa-solid fa-fire-burner text-base w-5 text-emerald-400/70"></i>
+        <span>จัดการโรงอบแห้ง</span>
       </a>
 
       <!-- ข้อมูลลูกค้า -->
       <a href="#" data-view="customers" class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-handshake text-base w-5 text-rose-400"></i>
+        <i class="fa-solid fa-handshake text-base w-5 text-emerald-400/70"></i>
         <span>ข้อมูลลูกค้า</span>
       </a>
 
       <!-- การเงินรายสมาชิก -->
       <a href="#" data-view="finance" class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-hand-holding-dollar text-base w-5 text-yellow-400"></i>
+        <i class="fa-solid fa-hand-holding-dollar text-base w-5 text-emerald-400/70"></i>
         <span>การเงินรายสมาชิก</span>
       </a>
 
@@ -165,7 +173,7 @@
       </div>
 
       <a href="#" data-view="settings" class="sidebar-link flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-200 hover:text-white">
-        <i class="fa-solid fa-gear text-base w-5 text-gray-300"></i>
+        <i class="fa-solid fa-gear text-base w-5 text-emerald-400/70"></i>
         <span>ตั้งค่าข้อมูลวิสาหกิจ</span>
       </a>
     </nav>
@@ -178,7 +186,7 @@
         </div>
         <div class="flex-1 overflow-hidden">
           <span id="user-name-display" class="text-xs font-bold text-slate-200 block truncate">ผู้ใช้งานระบบ</span>
-          <span id="user-role-display" class="text-[10px] text-emerald-400 font-semibold block truncate">ผู้เยี่ยมชม</span>
+          <span id="user-role-display" class="text-[10px] text-emerald-400/70 font-semibold block truncate">ผู้เยี่ยมชม</span>
         </div>
       </div>
     </div>
